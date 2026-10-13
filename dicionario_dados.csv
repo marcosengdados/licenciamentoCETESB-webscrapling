@@ -1,0 +1,15 @@
+﻿coluna,tipo,nulos,preenchidos,distintos,descricao
+Nº solicitação,Int64,0,274480,274480,Identificador numérico da solicitação no portal.
+Nº processo,string,150020,124460,124460,"Número do processo ambiental, quando já atribuído."
+Data da solicitação,datetime64[us],68,274412,1286,Data em que a solicitação foi registrada.
+Objetos da solicitação,string,0,274480,506,Objeto principal e objetos relacionados da solicitação.
+Interessado,string,60277,214203,87150,Pessoa física ou jurídica associada à solicitação.
+Técnico responsável,string,259919,14561,515,"Técnico responsável, quando informado."
+Empreendimento,string,74403,200077,103788,"Nome do empreendimento associado, quando informado."
+Status,string,0,274480,9,Situação atual da solicitação; dimensão principal da análise.
+Ações,string,274480,0,0,Campo visual da tabela do portal; não possui valor no endpoint coletado.
+ano,Int64,68,274412,4,Ano derivado da data da solicitação.
+mes,string,68,274412,43,"Mês derivado da data da solicitação, no formato AAAA-MM."
+tem_empreendimento,bool,0,274480,2,Indica se o registro possui empreendimento informado.
+tem_num_processo,bool,0,274480,2,Indica se o registro possui número de processo informado.
+Empreendimento análise,string,0,274480,103789,Empreendimento com Não informado para permitir agrupamentos completos.
