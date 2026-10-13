@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Marcos Vinicius Lima | Engenheiro Ambiental & Data Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --g0:#04100b;--g1:#071a12;
+  --verde:#22c97a;--verde-dim:rgba(34,201,122,.12);
+  --azul:#4db8ff;--amber:#f5a623;
+  --text:#e8f5ee;--muted:#5a8a70;--border:rgba(34,201,122,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+/* CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--verde);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;mix-blend-mode:screen;}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(34,201,122,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s;}
+
+/* NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.3;}
+body{font-family:'DM Mono',monospace;background:var(--g0);color:var(--text);overflow-x:hidden;cursor:none;}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+
+/* SCROLL PROGRESS */
+#scroll-bar{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--verde),var(--azul));z-index:300;}
+
+/* BACK TO TOP */
+#back-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;background:rgba(34,201,122,.12);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--verde);text-decoration:none;font-size:1.1rem;z-index:100;opacity:0;transform:translateY(10px);transition:opacity .3s,transform .3s,background .2s;pointer-events:none;}
+#back-top.show{opacity:1;transform:translateY(0);pointer-events:all;}
+#back-top:hover{background:rgba(34,201,122,.28);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 3.5rem;}
+nav::after{content:'';position:absolute;bottom:0;left:3.5rem;right:3.5rem;height:1px;background:var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:var(--verde);}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;transition:color .2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--verde);transition:width .3s;}
+.nav-links a:hover,.nav-links a.active{color:var(--verde);}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 400px;align-items:center;gap:4rem;padding:0 3.5rem;position:relative;z-index:1;}
+.hero-eyebrow{display:flex;align-items:center;gap:.8rem;margin-bottom:2rem;}
+.ey-line{width:32px;height:1px;background:var(--verde);}
+.ey-text{font-size:.63rem;letter-spacing:.18em;text-transform:uppercase;color:var(--verde);}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3rem,7vw,6.2rem);line-height:.93;letter-spacing:-.04em;color:#f0faf5;margin-bottom:2rem;}
+.hero h1 em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--verde);font-weight:400;}
+.hero-sub{font-size:.8rem;color:var(--muted);line-height:1.9;max-width:460px;margin-bottom:2.5rem;}
+.hero-btns{display:flex;gap:.8rem;flex-wrap:wrap;}
+.btn-p{background:var(--verde);color:#04100b;padding:.75rem 1.8rem;border-radius:.5rem;text-decoration:none;font-weight:700;font-size:.78rem;letter-spacing:.06em;transition:all .2s;font-family:'Syne',sans-serif;}
+.btn-p:hover{background:#1aac68;transform:translateY(-2px);}
+.btn-o{border:1px solid var(--border);color:var(--verde);padding:.75rem 1.8rem;border-radius:.5rem;text-decoration:none;font-size:.78rem;transition:all .2s;}
+.btn-o:hover{background:var(--verde-dim);}
+
+/* HERO CARD */
+.hero-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:1.4rem;padding:1.8rem;backdrop-filter:blur(8px);}
+.hero-photo{width:100%;aspect-ratio:1;border-radius:.9rem;overflow:hidden;margin-bottom:1.4rem;border:2px solid var(--border);}
+.hero-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(15%);}
+.hero-photo-fallback{width:100%;height:100%;background:linear-gradient(135deg,#0a2818,#134d2e);display:flex;align-items:center;justify-content:center;font-size:4rem;}
+.hero-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:#d4f0e0;margin-bottom:.2rem;}
+.hero-role{font-size:.68rem;color:var(--verde);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1.2rem;}
+.hero-kpis{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;}
+.kpi{background:rgba(34,201,122,.06);border:1px solid var(--border);border-radius:.7rem;padding:.75rem;}
+.kpi-row{display:flex;align-items:baseline;gap:.1rem;}
+.kpi-num{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700;color:var(--verde);line-height:1;}
+.kpi-sfx{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--verde);}
+.kpi-lbl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:.25rem;}
+
+/* SCROLL HINT */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;color:var(--muted);font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;z-index:1;animation:bob 3s ease infinite;}
+.scroll-line{width:1px;height:42px;background:linear-gradient(to bottom,var(--verde),transparent);}
+@keyframes bob{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0);}50%{opacity:1;transform:translateX(-50%) translateY(-5px);}}
+
+/* SECTIONS */
+section{padding:8rem 3.5rem;position:relative;z-index:1;}
+.sec-label{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--verde);margin-bottom:.5rem;display:flex;align-items:center;gap:.7rem;}
+.sec-label::before{content:'';display:inline-block;width:16px;height:1px;background:var(--verde);}
+.sec-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,4vw,3rem);line-height:1.05;letter-spacing:-.03em;color:#f0faf5;margin-bottom:3.5rem;}
+.sec-title em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--verde);font-weight:400;}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* SOBRE */
+#sobre{background:linear-gradient(180deg,var(--g0),var(--g1));border-top:1px solid var(--border);}
+.sobre-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+.sobre-lead{font-family:'Instrument Serif',serif;font-size:1.35rem;line-height:1.6;color:#c8edd8;margin-bottom:1.4rem;font-style:italic;}
+.sobre-body{font-size:.79rem;color:var(--muted);line-height:2;margin-bottom:.9rem;}
+.sobre-loc{display:flex;align-items:center;gap:.5rem;font-size:.7rem;color:var(--verde);margin-top:1.4rem;}
+.sobre-cards{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.sc{background:rgba(34,201,122,.04);border:1px solid var(--border);border-radius:12px;padding:1.3rem;transition:all .3s;}
+.sc:hover{background:rgba(34,201,122,.09);border-color:rgba(34,201,122,.4);transform:translateY(-4px);}
+.sc-ico{font-size:1.5rem;margin-bottom:.7rem;}
+.sc-title{font-family:'Syne',sans-serif;font-size:.79rem;font-weight:700;color:#d4f0e0;margin-bottom:.25rem;}
+.sc-desc{font-size:.69rem;color:var(--muted);line-height:1.7;}
+
+/* SKILLS */
+#habilidades{background:var(--g0);}
+.skills-layout{display:grid;grid-template-columns:1fr 2fr;gap:5rem;align-items:start;}
+.skills-rings{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.ring-wrap{display:flex;flex-direction:column;align-items:center;gap:.7rem;}
+.ring-svg{transform:rotate(-90deg);}
+.ring-track{fill:none;stroke:rgba(34,201,122,.1);stroke-width:4;}
+.ring-fill{fill:none;stroke-width:4;stroke-linecap:round;
+  stroke-dasharray:238.8;stroke-dashoffset:238.8;
+  transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1);}
+.ring-label{text-align:center;}
+.ring-pct{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--verde);}
+.ring-name{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.15rem;}
+.stags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;}
+.stag{font-size:.67rem;padding:.32rem .75rem;border-radius:2rem;border:1px solid var(--border);color:var(--muted);transition:all .2s;cursor:default;}
+.stag:hover{background:var(--verde-dim);color:var(--verde);border-color:var(--verde);}
+
+/* PROJETOS */
+#projetos{background:var(--g1);border-top:1px solid var(--border);}
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;}
+.proj-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;}
+.proj-card:hover{transform:translateY(-7px);border-color:rgba(34,201,122,.5);box-shadow:0 18px 50px rgba(34,201,122,.07);}
+.proj-banner{height:100px;display:flex;align-items:center;justify-content:center;font-size:2.4rem;}
+.pb-g{background:linear-gradient(135deg,#081e12,#10402a);}
+.pb-b{background:linear-gradient(135deg,#06101a,#0a2036);}
+.pb-a{background:linear-gradient(135deg,#130c00,#2e1e00);}
+.pb-t{background:linear-gradient(135deg,#070814,#0e1128);}
+.pb-w{background:linear-gradient(135deg,#060f10,#082424);}
+.pb-p{background:linear-gradient(135deg,#140a1e,#2c1240);}
+.proj-body{padding:1.3rem;flex:1;display:flex;flex-direction:column;}
+.proj-tipo{font-size:.61rem;text-transform:uppercase;letter-spacing:.12em;color:var(--verde);margin-bottom:.4rem;}
+.proj-titulo{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:#d4f0e0;margin-bottom:.5rem;}
+.proj-desc{font-size:.74rem;color:var(--muted);line-height:1.8;margin-bottom:.8rem;flex:1;}
+.proj-impact{font-size:.69rem;color:#88d4aa;margin-bottom:.8rem;padding:.45rem .7rem;background:rgba(34,201,122,.07);border-left:2px solid var(--verde);border-radius:0 6px 6px 0;}
+.ptechs{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.9rem;}
+.pt{background:rgba(255,255,255,.05);color:#5a8a70;font-size:.61rem;padding:.18rem .5rem;border-radius:1rem;border:1px solid rgba(255,255,255,.08);}
+.plinks{display:flex;gap:.5rem;padding-top:.85rem;border-top:1px solid rgba(255,255,255,.05);}
+.pl{display:inline-flex;align-items:center;gap:.3rem;font-size:.69rem;font-weight:500;padding:.38rem .8rem;border-radius:.45rem;text-decoration:none;transition:all .2s;}
+.pl-gh{background:rgba(255,255,255,.05);color:#8ab0a0;border:1px solid rgba(255,255,255,.1);}
+.pl-gh:hover{background:rgba(255,255,255,.1);color:#d4f0e0;}
+.pl-view{background:rgba(34,201,122,.1);color:var(--verde);border:1px solid rgba(34,201,122,.3);}
+.pl-view:hover{background:rgba(34,201,122,.2);}
+.pl-dis{opacity:.3;pointer-events:none;}
+
+/* EXPERIÊNCIA */
+#experiencia{background:var(--g0);}
+.exp-grid{display:grid;grid-template-columns:175px 1fr;gap:0;}
+.exp-years{display:flex;flex-direction:column;border-right:1px solid var(--border);padding-right:2rem;}
+.eyb{font-family:'Syne',sans-serif;font-size:.86rem;font-weight:700;color:var(--muted);padding:1.3rem 0;cursor:pointer;border:none;background:none;text-align:right;transition:color .2s;position:relative;}
+.eyb::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:0;height:0;border-radius:50%;background:var(--verde);transition:all .3s;}
+.eyb.active{color:var(--verde);}
+.eyb.active::after{width:8px;height:8px;right:-4px;}
+.exp-detail{padding-left:3rem;}
+.exp-pane{display:none;}
+.exp-pane.active{display:block;animation:fadeSlide .35s ease;}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:translateX(0);}}
+.exp-cargo{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:700;color:#d4f0e0;margin-bottom:.3rem;letter-spacing:-.02em;}
+.exp-empresa{font-size:.76rem;color:var(--verde);margin-bottom:1.2rem;letter-spacing:.05em;}
+.exp-bullets{list-style:none;margin-bottom:1.2rem;}
+.exp-bullets li{font-size:.75rem;color:var(--muted);line-height:1.9;padding-left:1.2rem;position:relative;}
+.exp-bullets li::before{content:'→';position:absolute;left:0;color:var(--verde);font-size:.68rem;}
+.etags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.etag{font-size:.61rem;padding:.26rem .62rem;border-radius:1rem;background:rgba(34,201,122,.08);color:var(--verde);border:1px solid rgba(34,201,122,.2);}
+
+/* CERTS */
+#certificacoes{background:var(--g1);border-top:1px solid var(--border);}
+.certs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.cert-card{display:flex;align-items:center;gap:.9rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;transition:all .2s;}
+.cert-card:hover{border-color:rgba(34,201,122,.4);background:rgba(34,201,122,.04);}
+.cert-ico{width:36px;height:36px;border-radius:7px;flex-shrink:0;background:rgba(34,201,122,.1);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.cert-nome{font-size:.75rem;font-weight:500;color:#c8edd8;line-height:1.3;}
+.cert-org{font-size:.62rem;color:var(--muted);margin-top:.12rem;}
+
+/* MAPAS */
+#mapas{background:var(--g0);border-top:1px solid var(--border);}
+.mapas-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
+.mapa-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all .3s;}
+.mapa-card:hover{border-color:rgba(34,201,122,.5);transform:translateY(-5px);}
+.mapa-banner{height:130px;background:linear-gradient(135deg,#060f0a,#0d2918);display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;}
+.mapa-badge{position:absolute;top:.8rem;right:.8rem;font-size:.59rem;background:rgba(34,201,122,.2);color:var(--verde);border:1px solid rgba(34,201,122,.4);padding:.2rem .5rem;border-radius:1rem;letter-spacing:.08em;text-transform:uppercase;}
+.mapa-body{padding:1.3rem;}
+.mapa-tipo{font-size:.61rem;text-transform:uppercase;letter-spacing:.12em;color:var(--azul);margin-bottom:.4rem;}
+.mapa-titulo{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;color:#d4f0e0;margin-bottom:.5rem;}
+.mapa-desc{font-size:.74rem;color:var(--muted);line-height:1.8;margin-bottom:1rem;}
+.mapa-links{display:flex;gap:.5rem;}
+.mapa-info{margin-top:2rem;padding:1.4rem;background:rgba(34,201,122,.05);border:1px solid var(--border);border-radius:12px;font-size:.76rem;color:var(--muted);line-height:1.8;}
+.mapa-info strong{color:#c8edd8;}
+
+/* CONTATO */
+#contato{background:var(--g0);border-top:1px solid var(--border);text-align:center;}
+.contato-mega{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.2rem,5.5vw,5rem);letter-spacing:-.04em;color:#f0faf5;line-height:1;margin-bottom:.8rem;}
+.contato-mega em{font-family:'Instrument Serif',serif;font-style:italic;color:var(--verde);font-weight:400;}
+.contato-sub{color:var(--muted);font-size:.78rem;margin-bottom:2.5rem;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.8;}
+.contato-links{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-bottom:5rem;}
+.cl{display:inline-flex;align-items:center;gap:.45rem;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--muted);text-decoration:none;padding:.75rem 1.3rem;border-radius:.55rem;font-size:.72rem;letter-spacing:.05em;transition:all .25s;}
+.cl:hover{background:rgba(34,201,122,.08);color:var(--verde);border-color:rgba(34,201,122,.4);transform:translateY(-3px);}
+
+/* FOOTER */
+footer{padding:1.8rem 3.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+.footer-copy{font-size:.64rem;color:var(--muted);}
+.footer-badge{font-size:.62rem;color:var(--muted);display:flex;align-items:center;gap:.45rem;}
+.fdot{width:6px;height:6px;border-radius:50%;background:var(--verde);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  nav{padding:1rem 1.5rem;}
+  nav::after{left:1.5rem;right:1.5rem;}
+  .hero{grid-template-columns:1fr;padding:7rem 1.5rem 3rem;}
+  .hero-card{display:none;}
+  section{padding:5rem 1.5rem;}
+  .sobre-grid,.skills-layout,.proj-grid,.certs-grid,.mapas-grid{grid-template-columns:1fr;}
+  .skills-rings{grid-template-columns:repeat(3,1fr);}
+  .exp-grid{grid-template-columns:1fr;}
+  .exp-years{flex-direction:row;border-right:none;border-bottom:1px solid var(--border);padding:0 0 1rem;margin-bottom:2rem;flex-wrap:wrap;gap:.5rem;}
+  .eyb{padding:.45rem .9rem;border:1px solid var(--border);border-radius:.5rem;}
+  .eyb::after{display:none;}
+  .eyb.active{background:var(--verde-dim);border-color:var(--verde);}
+  .exp-detail{padding-left:0;padding-top:1rem;}
+  footer{flex-direction:column;gap:1rem;text-align:center;}
+  #back-top{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="scroll-bar"></div>
+<a href="#inicio" id="back-top" aria-label="Topo">↑</a>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">MVL.eng</div>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#habilidades">Skills</a></li>
+    <li><a href="#projetos">Projetos</a></li>
+    <li><a href="#mapas">Mapas QGIS</a></li>
+    <li><a href="#experiencia">Experiência</a></li>
+    <li><a href="#contato">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="reveal">
+    <div class="hero-eyebrow">
+      <span class="ey-line"></span>
+      <span class="ey-text">Engenheiro Ambiental · Data Analytics · QGIS · Python · CREA Ativo</span>
+    </div>
+    <h1>Dados que<br><em>protegem</em><br>o planeta.</h1>
+    <p class="hero-sub">Engenheiro Ambiental (IFBA, 2025) especializado em automação de processos de licenciamento, geoprocessamento e análise de dados ambientais. Transformo dados técnicos de campo em decisões estratégicas e conformidade mensurável.</p>
+    <div class="hero-btns">
+      <a href="#projetos" class="btn-p">Ver projetos</a>
+      <a href="#contato" class="btn-o">Entrar em contato</a>
+    </div>
+  </div>
+  <div class="hero-card reveal">
+    <div class="hero-photo">
+      <img src="https://avatars.githubusercontent.com/u/147777061?v=4" alt="Marcos Vinicius Lima"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+      <div class="hero-photo-fallback" style="display:none">🌿</div>
+    </div>
+    <div class="hero-name">Marcos Vinicius Lima</div>
+    <div class="hero-role">Eng. Ambiental · Data Analyst · São Paulo — SP</div>
+    <div class="hero-kpis">
+      <div class="kpi">
+        <div class="kpi-row"><span class="kpi-num" data-target="10">10</span><span class="kpi-sfx">+</span></div>
+        <div class="kpi-lbl">Mapas QGIS</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-row"><span class="kpi-num" data-target="5">5</span><span class="kpi-sfx">+</span></div>
+        <div class="kpi-lbl">Automações Python</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-row"><span class="kpi-num" data-target="3">3</span></div>
+        <div class="kpi-lbl">Empreendimentos</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-row"><span class="kpi-num" data-target="35">35</span><span class="kpi-sfx">+</span></div>
+        <div class="kpi-lbl">Repos GitHub</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint"><div class="scroll-line"></div><span>scroll</span></div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="sobre-grid">
+    <div class="reveal">
+      <div class="sec-label">Sobre mim</div>
+      <h2 class="sec-title">Engenharia<br>& <em>dados</em><br>em campo.</h2>
+      <p class="sobre-lead">"Não apenas analiso dados — construo pipelines que transformam informações brutas de campo em decisões ambientais com impacto real."</p>
+      <p class="sobre-body">Engenheiro Ambiental formado pelo IFBA (2025), atualmente na Prover Engenharia como Engenheiro Ambiental Jr, com foco em licenciamento de mineração, indústria, postos de combustível e obras (LP, LI, LO), além de gestão e emissão de MTRs e CDFs. Antes, passou pela Ecocriar Engenharia, onde desenvolveu 5 ferramentas Python para rastreamento automático de processos de licenciamento ambiental no SEI.</p>
+      <p class="sobre-body">Formação complementar em Análise de Dados (EBAC), ESG e GHG Protocol (CONEAS), e especialização em geoprocessamento com QGIS e modelagem hidrológica com HEC-RAS e HEC-HMS.</p>
+      <div class="sobre-loc">📍 São Paulo – SP &nbsp;|&nbsp; Presencial, Híbrido ou Remoto &nbsp;|&nbsp; CNH B &nbsp;|&nbsp; CREA-SP 5071911196 (Ativo)</div>
+    </div>
+    <div class="sobre-cards reveal">
+      <div class="sc"><div class="sc-ico">🗺️</div><div class="sc-title">Geoprocessamento</div><div class="sc-desc">+10 mapas temáticos QGIS para licenciamento: zoneamento, áreas de influência, enquadramento hidrológico.</div></div>
+      <div class="sc"><div class="sc-ico">🐍</div><div class="sc-title">Automação Python</div><div class="sc-desc">5 ferramentas de web scraping + alertas automáticos para rastreamento de processos no SEI e IBAMA.</div></div>
+      <div class="sc"><div class="sc-ico">📊</div><div class="sc-title">BI & Dashboards</div><div class="sc-desc">Power BI, Tableau e Looker Studio para KPIs ambientais e operacionais com dados reais de campo.</div></div>
+      <div class="sc"><div class="sc-ico">⚗️</div><div class="sc-title">Modelagem Hídrica</div><div class="sc-desc">HEC-RAS, HEC-HMS e Streeter-Phelps para disponibilidade hídrica e autodepuração (CONAMA 357/2005).</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HABILIDADES -->
+<section id="habilidades">
+  <div class="reveal">
+    <div class="sec-label">Competências</div>
+    <h2 class="sec-title">Stack técnico &<br><em>especialidades.</em></h2>
+  </div>
+  <div class="skills-layout">
+    <div class="reveal">
+      <p style="font-size:.79rem;color:var(--muted);line-height:2;margin-bottom:2rem;">Combinação única de formação em engenharia ambiental com ferramentas modernas de dados, automação e geoprocessamento.</p>
+      <div style="margin-bottom:1.4rem;">
+        <div class="sec-label" style="margin-bottom:.7rem;">Dados & Automação</div>
+        <div class="stags"><span class="stag">Python</span><span class="stag">Pandas</span><span class="stag">NumPy</span><span class="stag">Selenium</span><span class="stag">Web Scraping</span><span class="stag">SQL</span><span class="stag">PySpark</span><span class="stag">AWS S3</span></div>
+      </div>
+      <div style="margin-bottom:1.4rem;">
+        <div class="sec-label" style="margin-bottom:.7rem;">BI & Visualização</div>
+        <div class="stags"><span class="stag">Power BI</span><span class="stag">DAX</span><span class="stag">Tableau</span><span class="stag">Looker Studio</span><span class="stag">Excel Avançado</span><span class="stag">ClickUp</span></div>
+      </div>
+      <div style="margin-bottom:1.4rem;">
+        <div class="sec-label" style="margin-bottom:.7rem;">Geoprocessamento & Engenharia</div>
+        <div class="stags"><span class="stag">QGIS</span><span class="stag">AutoCAD</span><span class="stag">HEC-RAS</span><span class="stag">HEC-HMS</span><span class="stag">Streeter-Phelps</span><span class="stag">GeoJSON</span></div>
+      </div>
+      <div>
+        <div class="sec-label" style="margin-bottom:.7rem;">Normas & Legislação</div>
+        <div class="stags"><span class="stag">PGRSS</span><span class="stag">PGRCC</span><span class="stag">LP/LI/LO</span><span class="stag">MTR/CDF</span><span class="stag">CONAMA 357</span><span class="stag">IBAMA/SEI</span><span class="stag">PNRS</span><span class="stag">ISO 14001</span><span class="stag">ISO 9001</span><span class="stag">GHG Protocol</span><span class="stag">ESG</span></div>
+      </div>
+    </div>
+    <div class="skills-rings reveal">
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-track" cx="48" cy="48" r="38"/>
+          <circle class="ring-fill" cx="48" cy="48" r="38" stroke="var(--verde)" data-pct="90"/>
+        </svg>
+        <div class="ring-label"><div class="ring-pct">90%</div><div class="ring-name">QGIS</div></div>
+      </div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-track" cx="48" cy="48" r="38"/>
+          <circle class="ring-fill" cx="48" cy="48" r="38" stroke="var(--azul)" data-pct="85"/>
+        </svg>
+        <div class="ring-label"><div class="ring-pct" style="color:var(--azul)">85%</div><div class="ring-name">Python</div></div>
+      </div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-track" cx="48" cy="48" r="38"/>
+          <circle class="ring-fill" cx="48" cy="48" r="38" stroke="var(--amber)" data-pct="82"/>
+        </svg>
+        <div class="ring-label"><div class="ring-pct" style="color:var(--amber)">82%</div><div class="ring-name">Power BI</div></div>
+      </div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-track" cx="48" cy="48" r="38"/>
+          <circle class="ring-fill" cx="48" cy="48" r="38" stroke="var(--verde)" data-pct="88"/>
+        </svg>
+        <div class="ring-label"><div class="ring-pct">88%</div><div class="ring-name">Licenciamento</div></div>
+      </div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-track" cx="48" cy="48" r="38"/>
+          <circle class="ring-fill" cx="48" cy="48" r="38" stroke="var(--azul)" data-pct="78"/>
+        </svg>
+        <div class="ring-label"><div class="ring-pct" style="color:var(--azul)">78%</div><div class="ring-name">HEC-RAS/HMS</div></div>
+      </div>
+      <div class="ring-wrap">
+        <svg class="ring-svg" width="96" height="96" viewBox="0 0 96 96">
+          <circle class="ring-track" cx="48" cy="48" r="38"/>
+          <circle class="ring-fill" cx="48" cy="48" r="38" stroke="var(--amber)" data-pct="80"/>
+        </svg>
+        <div class="ring-label"><div class="ring-pct" style="color:var(--amber)">80%</div><div class="ring-name">SQL</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section id="projetos">
+  <div class="reveal">
+    <div class="sec-label">Portfólio — Dados & Automação</div>
+    <h2 class="sec-title">Projetos em<br><em>destaque.</em></h2>
+  </div>
+  <div class="proj-grid reveal">
+
+    <div class="proj-card">
+      <div class="proj-banner pb-g">🕷️</div>
+      <div class="proj-body">
+        <div class="proj-tipo">Python · Automação · Licenciamento</div>
+        <div class="proj-titulo">Monitoramento Automatizado de Licenciamentos</div>
+        <div class="proj-desc">Script Python + Selenium que lê planilha de links, acessa portais ambientais automaticamente e organiza os dados em estrutura tabulada — eliminando monitoramento manual.</div>
+        <div class="proj-impact">→ Pipeline de coleta escalável substituindo pesquisa manual</div>
+        <div class="ptechs"><span class="pt">Python</span><span class="pt">Selenium</span><span class="pt">Web Scraping</span><span class="pt">ETL</span><span class="pt">SEI/IBAMA</span></div>
+        <div class="plinks">
+          <a href="https://github.com/marcosengdados/Web.Scraping" class="pl pl-gh" target="_blank">🐙 GitHub</a>
+          <a href="https://github.com/marcosengdados/Web.Scraping" class="pl pl-view" target="_blank">👁 Ver projeto</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-banner pb-b">💧</div>
+      <div class="proj-body">
+        <div class="proj-tipo">Python · Modelagem Ambiental · Recursos Hídricos</div>
+        <div class="proj-titulo">Modelagem de Autodepuração Hídrica</div>
+        <div class="proj-desc">Análise de parâmetros de qualidade da água (OD, DBO) ao longo de perfis longitudinais de corpos receptores, com visualizações para suporte a laudos técnicos.</div>
+        <div class="proj-impact">→ Ferramenta analítica para laudos e estudos de impacto ambiental</div>
+        <div class="ptechs"><span class="pt">Python</span><span class="pt">Pandas</span><span class="pt">Streeter-Phelps</span><span class="pt">CONAMA 357</span></div>
+        <div class="plinks">
+          <a href="https://github.com/marcosengdados/Projeto-autodepura-o-hidrica" class="pl pl-gh" target="_blank">🐙 GitHub</a>
+          <a href="https://github.com/marcosengdados/Projeto-autodepura-o-hidrica" class="pl pl-view" target="_blank">👁 Ver projeto</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-banner pb-p">📐</div>
+      <div class="proj-body">
+        <div class="proj-tipo">Power BI · DAX · Gestão da Qualidade</div>
+        <div class="proj-titulo">Dashboard de Gestão da Qualidade</div>
+        <div class="proj-desc">Estudo de caso do curso de Gestão da Qualidade: painel com indicadores de conformidade e desempenho estruturado sobre os princípios da ISO 9001.</div>
+        <div class="proj-impact">→ Painel de indicadores para leitura rápida de conformidade e desempenho</div>
+        <div class="ptechs"><span class="pt">Python</span><span class="pt">Power BI</span><span class="pt">DAX</span><span class="pt">ISO 9001</span></div>
+        <div class="plinks">
+          <a href="https://github.com/marcosengdados/Dashboard_SGQualidade" class="pl pl-gh" target="_blank">🐙 GitHub</a>
+          <a href="https://github.com/marcosengdados/Dashboard_SGQualidade" class="pl pl-view" target="_blank">👁 Ver projeto</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-banner pb-t">🏥</div>
+      <div class="proj-body">
+        <div class="proj-tipo">Gestão de Resíduos · PGRSS · Compliance</div>
+        <div class="proj-titulo">PGRSS — Plano de Gestão de Resíduos de Saúde</div>
+        <div class="proj-desc">Estruturação completa de PGRSS com segregação, acondicionamento, armazenamento, coleta, transporte e destinação conforme ABNT/ANVISA.</div>
+        <div class="proj-impact">→ Plano documentado para suporte à obtenção de alvarás sanitários</div>
+        <div class="ptechs"><span class="pt">PGRSS</span><span class="pt">ANVISA</span><span class="pt">ABNT</span><span class="pt">Resíduos Perigosos</span></div>
+        <div class="plinks">
+          <a href="https://github.com/marcosengdados/Plano-gestao-residuos-saude" class="pl pl-gh" target="_blank">🐙 GitHub</a>
+          <a href="https://github.com/marcosengdados/Plano-gestao-residuos-saude" class="pl pl-view" target="_blank">👁 Ver projeto</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-banner pb-a">📈</div>
+      <div class="proj-body">
+        <div class="proj-tipo">Power BI · Excel · Inteligência Ambiental</div>
+        <div class="proj-titulo">Dashboard de Autuações IBAMA</div>
+        <div class="proj-desc">Painel de inteligência ambiental construído sobre os dados públicos de autuações do IBAMA, organizando registros de fiscalização para leitura e análise territorial.</div>
+        <div class="proj-impact">→ Painel público transformado em inteligência ambiental acionável</div>
+        <div class="ptechs"><span class="pt">Python</span><span class="pt">Power BI</span><span class="pt">Excel</span><span class="pt">IBAMA</span></div>
+        <div class="plinks">
+          <a href="https://github.com/marcosengdados/Dashboard_licenciamento_IBAMA_25" class="pl pl-gh" target="_blank">🐙 GitHub</a>
+          <a href="https://github.com/marcosengdados/Dashboard_licenciamento_IBAMA_25" class="pl pl-view" target="_blank">👁 Ver projeto</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card">
+      <div class="proj-banner pb-w">🗺️</div>
+      <div class="proj-body">
+        <div class="proj-tipo">QGIS · GeoJSON · AutoCAD</div>
+        <div class="proj-titulo">Mapas Demonstrativos de Licenciamento</div>
+        <div class="proj-desc">Coleção de mapas temáticos de licenciamento ambiental: localização, zoneamento, enquadramento hidrológico e áreas de influência direta e indireta.</div>
+        <div class="proj-impact">→ Cartografia técnica pronta para peças de licenciamento</div>
+        <div class="ptechs"><span class="pt">QGIS</span><span class="pt">GeoJSON</span><span class="pt">AutoCAD</span><span class="pt">LP/LI/LO</span></div>
+        <div class="plinks">
+          <a href="https://github.com/marcosengdados/mapas_demonstrativos" class="pl pl-gh" target="_blank">🐙 GitHub</a>
+          <a href="https://github.com/marcosengdados/mapas_demonstrativos" class="pl pl-view" target="_blank">👁 Ver projeto</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MAPAS QGIS -->
+<section id="mapas">
+  <div class="reveal">
+    <div class="sec-label">Geoprocessamento</div>
+    <h2 class="sec-title">Mapas QGIS &<br><em>análise espacial.</em></h2>
+  </div>
+  <div class="mapas-grid reveal">
+    <div class="mapa-card">
+      <div class="mapa-banner">🗺️<span class="mapa-badge">QGIS</span></div>
+      <div class="mapa-body">
+        <div class="mapa-tipo">Licenciamento Ambiental · Cartografia Técnica</div>
+        <div class="mapa-titulo">Mapas Demonstrativos — Licenciamento</div>
+        <div class="mapa-desc">Coleção de mapas temáticos e operacionais com padrão técnico de licenciamento ambiental: localização, zoneamento, enquadramento hidrológico e áreas de influência direta e indireta.</div>
+        <div class="ptechs"><span class="pt">QGIS</span><span class="pt">AutoCAD</span><span class="pt">GeoJSON</span><span class="pt">LP/LI/LO</span><span class="pt">IBAMA</span></div>
+        <div class="mapa-links">
+          <a href="https://github.com/marcosengdados/mapas_demonstrativos" class="pl pl-gh" target="_blank">🐙 Repositório</a>
+          <a href="#" class="pl pl-view pl-dis">🗺️ Viewer em breve</a>
+        </div>
+      </div>
+    </div>
+    <div class="mapa-card">
+      <div class="mapa-banner">🌊<span class="mapa-badge">HEC-RAS</span></div>
+      <div class="mapa-body">
+        <div class="mapa-tipo">Modelagem Hidrológica · Recursos Hídricos</div>
+        <div class="mapa-titulo">Mapas Hidrológicos e de Qualidade da Água</div>
+        <div class="mapa-desc">Mapas de zoneamento hidrológico, áreas de contribuição e corpos receptores integrados com modelagem HEC-RAS/HMS para disponibilidade hídrica e autodepuração.</div>
+        <div class="ptechs"><span class="pt">QGIS</span><span class="pt">HEC-RAS</span><span class="pt">HEC-HMS</span><span class="pt">CONAMA 357</span></div>
+        <div class="mapa-links">
+          <a href="https://github.com/marcosengdados/mapas_demonstrativos" class="pl pl-gh" target="_blank">🐙 Repositório</a>
+          <a href="#" class="pl pl-view pl-dis">🗺️ MapTiler em breve</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mapa-info reveal">
+    <strong>📌 Publicação interativa em andamento:</strong> Os mapas QGIS estão sendo publicados via MapTiler Cloud para visualização interativa no navegador. As camadas públicas estarão disponíveis em breve via iframe nesta seção. Dados sensíveis de licenciamento permanecem em repositório privado.
+  </div>
+</section>
+
+<!-- EXPERIÊNCIA -->
+<section id="experiencia">
+  <div class="reveal">
+    <div class="sec-label">Trajetória</div>
+    <h2 class="sec-title">Experiência<br><em>profissional.</em></h2>
+  </div>
+  <div class="exp-grid reveal">
+    <div class="exp-years">
+      <button class="eyb active" onclick="showExp(0)">2026 —</button>
+      <button class="eyb" onclick="showExp(1)">2025 —</button>
+      <button class="eyb" onclick="showExp(2)">2024 —</button>
+      <button class="eyb" onclick="showExp(3)">2023 —</button>
+      <button class="eyb" onclick="showExp(4)">2022 —</button>
+    </div>
+    <div class="exp-detail">
+      <div class="exp-pane active" id="exp-0">
+        <div class="exp-cargo">Engenheiro Ambiental Jr</div>
+        <div class="exp-empresa">Prover Engenharia – Licenciamento de Mineração, Obras e Gestão de Resíduos · Jan/2026 – Atual · São Paulo – SP (Híbrido)</div>
+        <ul class="exp-bullets">
+          <li>Planejamento e acompanhamento de processos de licenciamento ambiental (LP, LI, LO) para empreendimentos de mineração, indústria, postos de combustível e obras</li>
+          <li>Apoio à regularização ambiental de empreendimentos rurais, incluindo levantamento de documentação e adequação aos requisitos legais</li>
+          <li>Gestão e emissão de MTRs e CDFs, com controle de destinação de resíduos e conformidade junto aos órgãos ambientais</li>
+          <li>Participação no planejamento e dimensionamento de ETE e ETA como parte da instrução técnica de processos de licenciamento</li>
+          <li>Desenvolvimento de automação em Python para monitoramento de condicionantes e prazos regulatórios, com varredura automatizada e geração de relatórios técnicos</li>
+          <li>Elaboração de mapas e análises espaciais em QGIS para apoio a decisões técnicas de licenciamento e conformidade regulatória</li>
+        </ul>
+        <div class="etags"><span class="etag">Licenciamento Mineração</span><span class="etag">LP/LI/LO</span><span class="etag">MTR/CDF</span><span class="etag">Python</span><span class="etag">QGIS</span><span class="etag">ETE/ETA</span></div>
+      </div>
+      <div class="exp-pane" id="exp-1">
+        <div class="exp-cargo">Auxiliar de Engenharia Ambiental (Estágio)</div>
+        <div class="exp-empresa">Ecocriar Engenharia – Consultoria Ambiental · Nov/2024 – Ago/2025 (10 meses) · Teresina – PI e Maranhão (Remoto)</div>
+        <ul class="exp-bullets">
+          <li>Gestão e emissão de documentos ambientais (MTRs, condicionantes de licenças e autorizações) para empreendimentos no Piauí e Maranhão, junto ao IBAMA e SEI</li>
+          <li>Elaboração de PGRSS e PGRCC com base em diagnóstico técnico e normativas federais, incluindo resíduos perigosos</li>
+          <li>Desenvolveu 5 ferramentas Python (web scraping + alertas por e-mail + Cloudflare Tunnel) para rastreamento automático de processos no SEI</li>
+          <li>Mais de 10 mapas temáticos e operacionais no QGIS, AutoCAD e Photoshop com padrão técnico de licenciamento (LP, LI, LO)</li>
+          <li>Modelagem hidrológica com HEC-RAS, HEC-HMS e Streeter-Phelps (CONAMA 357/2005)</li>
+        </ul>
+        <div class="etags"><span class="etag">Python</span><span class="etag">QGIS</span><span class="etag">HEC-RAS</span><span class="etag">IBAMA/SEI</span><span class="etag">PGRSS</span><span class="etag">LP/LI/LO</span><span class="etag">Selenium</span></div>
+      </div>
+      <div class="exp-pane" id="exp-2">
+        <div class="exp-cargo">Pesquisador — Projeto de Extensão</div>
+        <div class="exp-empresa">IFBA – Instituto Federal da Bahia · Set/2024 – Abr/2025 · Vitória da Conquista – BA</div>
+        <ul class="exp-bullets">
+          <li>Avaliação quantitativa de impactos ambientais do uso de RCD em concreto, seguindo ABNT/NBR</li>
+          <li>Automação de coleta e análise de dados laboratoriais com Python garantindo reprodutibilidade técnica</li>
+          <li>Geração de relatórios estruturados para práticas de economia circular</li>
+        </ul>
+        <div class="etags"><span class="etag">Python</span><span class="etag">ABNT/NBR</span><span class="etag">RCD/RCC</span><span class="etag">Método ACI</span><span class="etag">Economia Circular</span></div>
+      </div>
+      <div class="exp-pane" id="exp-3">
+        <div class="exp-cargo">Estagiário — Gerenciamento e Tratamento de Resíduos</div>
+        <div class="exp-empresa">Grupo Ladeia · Jan/2023 – Mar/2024 · Vitória da Conquista – BA (Híbrido)</div>
+        <ul class="exp-bullets">
+          <li>P&D de produtos recicláveis (RCC e RSS), testes de resistência de concreto não-estrutural reciclado</li>
+          <li>Elaboração de relatórios técnicos e controle de indicadores com Excel para decisões de planejamento</li>
+          <li>Controle de estoque, recebimento de resíduos e prospecção de fornecedores</li>
+        </ul>
+        <div class="etags"><span class="etag">Excel Avançado</span><span class="etag">PGRSS</span><span class="etag">MTR</span><span class="etag">ABNT/NBR</span><span class="etag">Resíduos Sólidos</span></div>
+      </div>
+      <div class="exp-pane" id="exp-4">
+        <div class="exp-cargo">Estagiário — Assistência Técnica e Extensão Rural</div>
+        <div class="exp-empresa">CEDASB · Jan/2022 – Set/2022 · Vitória da Conquista – BA</div>
+        <ul class="exp-bullets">
+          <li>Monitoramento de parâmetros hídricos (qualidade, temperatura, oxigênio dissolvido) em 3 municípios</li>
+          <li>Geração de relatórios técnicos de apoio à decisão para assessoria ambiental e agropecuária</li>
+          <li>Participação em capacitações técnicas e processos de licenciamento</li>
+        </ul>
+        <div class="etags"><span class="etag">Monitoramento Hídrico</span><span class="etag">Campo</span><span class="etag">Licenciamento</span><span class="etag">Relatórios Técnicos</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICAÇÕES -->
+<section id="certificacoes">
+  <div class="reveal">
+    <div class="sec-label">Formação</div>
+    <h2 class="sec-title">Certificações &<br><em>qualificações.</em></h2>
+  </div>
+  <div class="certs-grid reveal">
+    <div class="cert-card"><div class="cert-ico">🎓</div><div><div class="cert-nome">Bacharelado em Engenharia Ambiental</div><div class="cert-org">IFBA – Campus Vitória da Conquista · 2025</div></div></div>
+    <div class="cert-card"><div class="cert-ico">📊</div><div><div class="cert-nome">Analista de Dados Profissional</div><div class="cert-org">EBAC · Python, SQL, Power BI, Estatística · 2025</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🗺️</div><div><div class="cert-nome">Mapeamento e Processamento com QGIS</div><div class="cert-org">Curso especializado · 2024</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🌊</div><div><div class="cert-nome">HEC-RAS / HEC-HMS — Modelagem Hidrológica</div><div class="cert-org">Aplicação prática em consultoria · 2025</div></div></div>
+    <div class="cert-card"><div class="cert-ico">📈</div><div><div class="cert-nome">Microsoft Power BI para BI e Data Science</div><div class="cert-org">Data Science Academy · 72h</div></div></div>
+    <div class="cert-card"><div class="cert-ico">☁️</div><div><div class="cert-nome">PySpark e AWS S3 — Big Data em Nuvem</div><div class="cert-org">2024</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🌿</div><div><div class="cert-nome">GHG Protocol e Mercado Ambiental</div><div class="cert-org">CONEAS · 10h</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🤖</div><div><div class="cert-nome">Automação com Python e Selenium</div><div class="cert-org">Ecocriar Engenharia · 2025</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🛰️</div><div><div class="cert-nome">Posicionamento via Satélite (GPS/GNSS)</div><div class="cert-org">IFBA · 60h</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🌎</div><div><div class="cert-nome">ISO 14001 — Sistema de Gestão Ambiental</div><div class="cert-org">Edutin Academy · 2026</div></div></div>
+    <div class="cert-card"><div class="cert-ico">✅</div><div><div class="cert-nome">ISO 9001 — Sistema de Gestão da Qualidade</div><div class="cert-org">Edutin Academy · 2026</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🦺</div><div><div class="cert-nome">Segurança do Trabalho</div><div class="cert-org">Edutin Academy · 2026</div></div></div>
+    <div class="cert-card"><div class="cert-ico">💡</div><div><div class="cert-nome">Business Intelligence (BI)</div><div class="cert-org">FIAP · 2026</div></div></div>
+    <div class="cert-card"><div class="cert-ico">🌱</div><div><div class="cert-nome">ESG — Por que é importante para o seu negócio</div><div class="cert-org">2024</div></div></div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato">
+  <div class="reveal">
+    <div class="sec-label">Vamos conversar</div>
+    <div class="contato-mega">Vamos<br>trabalhar<br><em>juntos?</em></div>
+    <p class="contato-sub">Aberto a oportunidades em Análise de Dados Ambientais · Geoprocessamento · Automação · BI · ESG · Licenciamento Ambiental</p>
+    <div class="contato-links">
+      <a href="mailto:eng.limamarcos@gmail.com" class="cl">✉️ eng.limamarcos@gmail.com</a>
+      <a href="https://linkedin.com/in/marcosamb" class="cl" target="_blank">💼 LinkedIn</a>
+      <a href="https://github.com/marcosengdados" class="cl" target="_blank">🐙 GitHub</a>
+      <a href="https://wa.me/5511947285673" class="cl" target="_blank">💬 WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2025 Marcos Vinicius Lima · Engenheiro Ambiental & Data Analytics · CREA Ativo</div>
+  <div class="footer-badge"><span class="fdot"></span>Disponível para projetos</div>
+</footer>
+
+<script>
+(function(){
+  // ── CURSOR ──
+  var cur=document.getElementById('cursor'),
+      cring=document.getElementById('cursor-ring'),
+      mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX; my=e.clientY;
+    cur.style.left=mx+'px'; cur.style.top=my+'px';
+  });
+  (function animR(){
+    rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+    cring.style.left=rx+'px'; cring.style.top=ry+'px';
+    requestAnimationFrame(animR);
+  })();
+  document.querySelectorAll('a,button').forEach(function(el){
+    el.addEventListener('mouseenter',function(){cur.style.width='20px';cur.style.height='20px';cring.style.width='52px';cring.style.height='52px';});
+    el.addEventListener('mouseleave',function(){cur.style.width='12px';cur.style.height='12px';cring.style.width='36px';cring.style.height='36px';});
+  });
+
+  // ── CANVAS PARTICLES ──
+  var canvas=document.getElementById('bg-canvas'),
+      ctx=canvas.getContext('2d'),W,H;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  var pts=[];
+  for(var i=0;i<70;i++){
+    pts.push({
+      x:Math.random()*window.innerWidth,
+      y:Math.random()*window.innerHeight,
+      vx:(Math.random()-.5)*0.15,
+      vy:(Math.random()-.5)*0.15,
+      r:Math.random()*1.3+0.3,
+      a:Math.random()*0.35+0.08
+    });
+  }
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){
+      var p=pts[i];
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(34,201,122,'+p.a+')';
+      ctx.fill();
+    }
+    for(var i=0;i<pts.length;i++){
+      for(var j=i+1;j<pts.length;j++){
+        var dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y,
+            d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle='rgba(34,201,122,'+((1-d/120)*0.06)+')';
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  // ── SCROLL REVEAL ──
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e,i){
+      if(e.isIntersecting){
+        e.target.style.transitionDelay=(i*0.06)+'s';
+        e.target.classList.add('visible');
+      }
+    });
+  },{threshold:0.08});
+  document.querySelectorAll('.reveal').forEach(function(r){obs.observe(r);});
+
+  // ── SCROLL PROGRESS + BACK TO TOP + NAV ATIVA ──
+  var scrollBar=document.getElementById('scroll-bar'),
+      backTop=document.getElementById('back-top'),
+      navLinks=document.querySelectorAll('.nav-links a'),
+      sections=document.querySelectorAll('section[id]');
+  window.addEventListener('scroll',function(){
+    var scrolled=window.scrollY,
+        total=document.body.scrollHeight-window.innerHeight;
+    if(scrollBar && total>0) scrollBar.style.width=(scrolled/total*100)+'%';
+    if(backTop) backTop.classList.toggle('show', scrolled>500);
+    var current='';
+    sections.forEach(function(s){
+      if(window.scrollY >= s.offsetTop-140) current=s.id;
+    });
+    navLinks.forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('href')==='#'+current);
+    });
+  },{passive:true});
+
+  // ── KPI COUNTERS ──
+  function animCount(el, target, duration){
+    duration = duration || 1600;
+    var start=null, from=0;
+    function step(ts){
+      if(!start) start=ts;
+      var elapsed=ts-start,
+          progress=Math.min(elapsed/duration,1),
+          ease=1-Math.pow(1-progress,4),
+          value=Math.round(from+(target-from)*ease);
+      el.textContent=value;
+      if(progress<1) requestAnimationFrame(step);
+      else el.textContent=target;
+    }
+    requestAnimationFrame(step);
+  }
+  var countersRan=false;
+  var kpiSection=document.querySelector('.hero-kpis');
+  if(kpiSection){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting && !countersRan){
+          countersRan=true;
+          document.querySelectorAll('.kpi-num[data-target]').forEach(function(el){
+            var raw=el.getAttribute('data-target'),
+                target=parseInt(raw, 10);
+            if(!isNaN(target)) animCount(el, target, 1600);
+          });
+        }
+      });
+    },{threshold:0.4}).observe(kpiSection);
+  }
+
+  // ── RING ANIMATIONS ──
+  var ringsRan=false;
+  var habilSection=document.getElementById('habilidades');
+  if(habilSection){
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting && !ringsRan){
+          ringsRan=true;
+          document.querySelectorAll('.ring-fill[data-pct]').forEach(function(r,i){
+            var raw=r.getAttribute('data-pct'),
+                pct=parseInt(raw,10);
+            if(isNaN(pct)) return;
+            var circumference=238.8,
+                offset=circumference*(1-pct/100);
+            setTimeout(function(){ r.style.strokeDashoffset=offset; }, 200+i*90);
+          });
+        }
+      });
+    },{threshold:0.2}).observe(habilSection);
+  }
+
+  // ── EXP TABS ──
+  window.showExp=function(idx){
+    document.querySelectorAll('.exp-pane').forEach(function(p,i){
+      p.classList.toggle('active', i===idx);
+    });
+    document.querySelectorAll('.eyb').forEach(function(b,i){
+      b.classList.toggle('active', i===idx);
+    });
+  };
+
+})();
+</script>
+</body>
+</html>
