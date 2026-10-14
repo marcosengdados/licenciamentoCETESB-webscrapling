@@ -2,11 +2,11 @@
 
 Mais do que um painel de visualização, esta camada de BI atua como o **motor de inteligência comercial (Sales Intelligence)** da operação. Desenvolvido em Power BI com modelagem *Star Schema* e governança de dados estrita, o painel traduz o complexo cenário regulatório paulista em ações de vendas de altíssima conversão.
 
-Como executivo, não olho para "processos ambientais"; olho para **oportunidades de receita, alocação de equipe e previsibilidade de caixa**. Abaixo, o desdobramento estratégico de cada visão do nosso pipeline:
+Nesse projeto a analise se fundamenta em não olhar para "processos ambientais", e sim para **oportunidades**. Abaixo, o desdobramento estratégico de cada visão do nosso pipeline:
 
 <div align="center">
 
-### 1. Visão C-Level: Panorama do Portfólio e Market Share
+### 1. Portfólio e Market Share
 <img src="Panorama%20Licenciamento%20CETESB%20%28Web%20scrapping%29_page-0001.jpg" width="850" style="border-radius: 8px; border: 2px solid #1b4332;">
 <p align="left">
 <i><b>Impacto Executivo & ROI:</b> Nossa varredura capturou <b>263 processos ativos distribuídos em 74 contas (CNPJs)</b>. A proporção de <b>3,5 processos por cliente</b> é o nosso indicador-chave de <b>Upsell/Cross-sell</b>. Se o dashboard aponta um gargalo sistêmico em "Renovações de LO" no estado, nós pivotamos a estratégia de marketing e as metas do trimestre para atacar especificamente essa dor. É a visão macro que direciona o esforço da companhia.</i>
