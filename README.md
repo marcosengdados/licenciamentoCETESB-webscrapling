@@ -1,105 +1,79 @@
-# 🌿 Panorama de Licenciamento CETESB — Pipeline de Sales Intelligence & Lead Scoring
+## 📈 Business Intelligence & Revenue Operations (RevOps)
 
-> Leitura consolidada de processos de licenciamento ambiental via Web Scraping, convertida em score de oportunidade, temperatura da carteira e ação comercial recomendada por empreendimento.
+Mais do que um painel de visualização, esta camada de BI atua como o **motor de inteligência comercial (Sales Intelligence)** da operação. Desenvolvido em Power BI com modelagem *Star Schema* e governança de dados estrita, o painel traduz o complexo cenário regulatório paulista em ações de vendas de altíssima conversão.
 
----
+Como executivo, não olho para "processos ambientais"; olho para **oportunidades de receita, alocação de equipe e previsibilidade de caixa**. Abaixo, o desdobramento estratégico de cada visão do nosso pipeline:
 
-## 🎯 Visão Geral do Projeto
+<div align="center">
 
-A prospecção B2B no setor de consultoria e engenharia ambiental enfrenta frequentemente um gargalo operacional: a identificação manual, fragmentada e reativa de demandas regulatórias. Este projeto resolve esse problema por meio de uma arquitetura automatizada de **Extração de Dados (Web Scraping)**, **Engenharia de Dados** e **Sales Intelligence**, que monitora processos administrativos na **CETESB** e os transforma em uma console de priorização comercial acionável (`Leads_Consolidados_CRM`).
+### 1. Visão C-Level: Panorama do Portfólio e Market Share
+<img src="Panorama%20Licenciamento%20CETESB%20%28Web%20scrapping%29_page-0001.jpg" width="850" style="border-radius: 8px; border: 2px solid #1b4332;">
+<p align="left">
+<i><b>Impacto Executivo & ROI:</b> Nossa varredura capturou <b>263 processos ativos distribuídos em 74 contas (CNPJs)</b>. A proporção de <b>3,5 processos por cliente</b> é o nosso indicador-chave de <b>Upsell/Cross-sell</b>. Se o dashboard aponta um gargalo sistêmico em "Renovações de LO" no estado, nós pivotamos a estratégia de marketing e as metas do trimestre para atacar especificamente essa dor. É a visão macro que direciona o esforço da companhia.</i>
+</p>
 
-O sistema elimina o julgamento humano subjetivo na triagem inicial, calculando o **Score de Oportunidade**, a **Temperatura do Lead** e a **Ação Comercial Recomendada** estritamente a partir da criticidade do status processual, do perfil do empreendimento e do tempo de recência.
+### 2. Visão Tática (Deal Desk): Desdobramento de Contas Estratégicas (Key Accounts)
+<img src="Panorama%20Licenciamento%20CETESB%20%28Web%20scrapping%29_page-0002.jpg" width="850" style="border-radius: 8px; border: 2px solid #1b4332;">
+<p align="left">
+<i><b>Impacto Executivo & ROI:</b> Esta é a tela que reduz nosso Custo de Aquisição de Clientes (CAC) e encurta o Ciclo de Vendas. O Executivo de Contas não faz "cold calls" genéricas. Ao isolar um CNPJ, o gráfico entrega uma assimetria de informação letal: sabemos exatamente qual licença está travada, há quantos dias, e qual documento falta. A abordagem comercial deixa de ser "oferecer consultoria" e passa a ser <b>"resolver o passivo milionário da fábrica que está parado na mesa do analista"</b>.</i>
+</p>
 
----
-
-## 📊 Principais Métricas do Pipeline (Snapshot)
-
-| Indicador (KPI) | Valor Consolidado | Contexto Técnico / Operacional |
-| :--- | :---: | :--- |
-| 🗂️ **Processos Monitorados** | **263** | Somatório de todos os status processuais extraídos e auditados na varredura |
-| 🏢 **Empreendimentos Mapeados** | **74** | Entidades únicas com processo ativo ou histórico relevante identificado na CETESB |
-| 🎯 **Score Médio de Oportunidade** | **66,15** | Escala quantitativa de $0$ a $100$ baseada na criticidade regulatória e recência |
-
----
-
-## 🖥️ Demonstração Visual e Arquitetura Analítica
-
-Abaixo estão as visões consolidadas e os recortes analíticos gerados pelo pipeline, conectando a extração de dados regulatórios à tomada de decisão comercial.
-
-### 1. Visão Executiva Consolidada — Panorama Geral (Página 1)
-![Panorama de Licenciamento CETESB - Página 1](Panorama%20Licenciamento%20CETESB%20%28Web%20scrapping%29_page-0001.jpg)
-> **Análise da Visão (`Panorama Licenciamento CETESB (Web scrapping)_page-0001.jpg`):** Painel principal do relatório executivo consolidando os indicadores-chave da carteira monitorada ($263$ processos distribuídos em $74$ empreendimentos), distribuição de criticidade, recortes por tipologia de licenciamento (LP, LI, LO, Renovação) e visão macro do funil de prospecção ambiental.
+</div>
 
 ---
 
-### 2. Detalhamento Operacional e Desdobramento de Processos (Página 2)
-![Panorama de Licenciamento CETESB - Página 2](Panorama%20Licenciamento%20CETESB%20%28Web%20scrapping%29_page-0002.jpg)
-> **Análise da Visão (`Panorama Licenciamento CETESB (Web scrapping)_page-0002.jpg`):** Segunda página do painel analítico voltada ao aprofundamento granular por empreendimento e status administrativo, permitindo cruzar o histórico de tramitação na CETESB com o potencial de conversão em contratos de consultoria técnica.
+### 🔍 Unidades de Inteligência Comercial (Módulos do Dashboard)
 
----
+<details open>
+<summary><b>🔥 1. Pipeline Velocity: Termômetro da Carteira</b></summary>
+<br>
+<div align="center">
+<img src="Temperatura%20da%20Carteira%20e%20Indicadores-Chave.jpg" width="800">
+</div>
+<br>
+<b>Estratégia de Conversão:</b> Gestão rigorosa de SLA comercial. Os <i>Leads Quentes</i> (Score > 80) representam <b>receita de curtíssimo prazo</b> — licenças indeferidas, embargos ou vencimentos em 30 dias que exigem "Tropa de Choque" imediata. A proporção de <i>Leads Mornos</i> garante o nosso <i>backlog</i> (pipeline de Q3/Q4). Se a proporção de leads frios cresce, sabemos que precisamos recalibrar os filtros do Web Scraper para buscar contas mais qualificadas.
+</details>
 
-### 3. Temperatura da Carteira e Indicadores-Chave (KPIs)
-![Temperatura da Carteira e Indicadores-Chave](Temperatura%20da%20Carteira%20e%20Indicadores-Chave.jpg)
-> **Análise do Recorte (`Temperatura da Carteira e Indicadores-Chave.jpg`):** Segmentação termográfica da base de leads (Quente, Morno, Frio) combinada aos KPIs centrais do pipeline. Permite que a diretoria comercial identifique instantaneamente a proporção da carteira que exige abordagem imediata devido a exigências técnicas, indeferimentos ou vencimentos próximos.
+<details open>
+<summary><b>🏭 2. Total Addressable Market (TAM): Concentração Setorial</b></summary>
+<br>
+<div align="center">
+<img src="Vol.%20por%20segmento.jpg" width="800">
+</div>
+<br>
+<b>Estratégia de Conversão:</b> Direcionamento de <i>Headcount</i> técnico. Se o gráfico revela que <b>45% da demanda regulatória latente está na Indústria Química e em Gestão de Resíduos</b>, é para lá que direcionamos nossos engenheiros seniores nas reuniões de <i>closing</i> (fechamento). Não desperdiçamos recursos de prospecção em setores (CNAEs) onde o volume de processos é irrisório.
+</details>
 
----
+<details open>
+<summary><b>💼 3. Motor de SDR: Matriz de Priorização B2B</b></summary>
+<br>
+<div align="center">
+<img src="priorizacao%20comercial.png" width="800">
+</div>
+<br>
+<b>Estratégia de Conversão:</b> Eliminação total de viés humano. O <b>Score Médio de 66,15</b> normaliza a urgência. O time de pré-vendas (SDRs) atua estritamente ordenando a tabela de cima para baixo. O cruzamento visual de <b>Criticidade Regulatória vs. Porte Financeiro da Empresa</b> garante que o tempo valioso da equipe comercial seja focado nos <i>Enterprise Deals</i> (tickets médios mais altos), maximizando o Retorno sobre o Tempo Investido.
+</details>
 
-### 4. Volume de Processos por Segmento Econômico
-![Volume por Segmento](Vol.%20por%20segmento.jpg)
-> **Análise do Recorte (`Vol. por segmento.jpg`):** Mapeamento da concentração de processos administrativos por setor de atividade e porte do empreendimento. Orienta a alocação de especialistas técnicos (indústria química, infraestrutura, gerenciamento de resíduos, agronegócio) conforme a demanda real observada no órgão ambiental.
+<details>
+<summary><b>🤝 4. Product-Market Fit Dinâmico: Sugestão de Portfólio</b></summary>
+<br>
+<div align="center">
+<img src="Pipeline%20de%20servi%C3%A7os%20recomendados.png" width="800">
+</div>
+<br>
+<b>Estratégia de Conversão:</b> Tradução automática do "problema" no "SKU" correto. O algoritmo lê um status burocrático obscuro (ex: <i>"Aguardando manifestação técnica de terceiros - DAEE"</i>) e orienta o time de vendas: <i>"Ofereça o serviço de Estudo de Outorga"</i>. Isso escala a inteligência comercial, permitindo que vendedores júniores negociem com a precisão de diretores técnicos.
+</details>
 
----
-
-### 5. Perfil de Contrato e Enquadramento Comercial
-![Perfil de Contrato](Perfil%20contrato.png)
-> **Análise do Recorte (`Perfil contrato.png`):** Classificação dos empreendimentos segundo o perfil de contratação esperado (projetos pontuais de regularização vs. contratos recorrentes de gestão e acompanhamento ambiental), estruturando a previsibilidade de receita da consultoria.
-
----
-
-### 6. Pipeline de Serviços Recomendados (Cross-Selling Técnico)
-![Pipeline de Serviços Recomendados](Pipeline%20de%20servi%C3%A7os%20recomendados.png)
-> **Análise do Recorte (`Pipeline de serviços recomendados.png`):** Motor de recomendação que traduz o status bruto da CETESB em soluções de engenharia comercializáveis (ex.: elaboração de estudos ambientais, atendimento a exigências técnicas, renovação de Licença de Operação, CADRI ou defesa administrativa).
-
----
-
-### 7. Matriz de Priorização Comercial e Lead Scoring
-![Priorização Comercial](priorizacao%20comercial.png)
-> **Análise do Recorte (`priorizacao comercial.png`):** Console final de ação para o time de vendas B2B (SDRs e Executivos de Contas), ordenando os empreendimentos pelo Score de Oportunidade (média de $66,15$), status de urgência e próxima ação comercial recomendada.
-
----
-
-## 🗄️ Arquitetura de Dados e Governança (Repositório)
-
-O repositório foi estruturado para fornecer transparência desde a camada de dados tabulares processados até os artefatos de visualização interativa:
-
-| Arquivo no Repositório | Camada | Descrição Técnica e Papel no Pipeline |
-| :--- | :---: | :--- |
-| `dicionario_dados.csv` | **Governança** | Documentação de metadados, tipagem, regras de negócio e semântica de cada coluna gerada no pipeline. |
-| `analise_empreendimento.csv` | **Camada Analítica** | Visão agregada por entidade empresarial ($74$ empreendimentos), contendo score consolidado e classificação comercial. |
-| `analise_status.csv` | **Camada Analítica** | Consolidação volumétrica e qualitativa por etapa do fluxo regulatório na CETESB ($263$ processos). |
-| `analise_status_empreendimento.csv` | **Camada Analítica** | Tabela fato relacionando cada empreendimento aos seus respectivos status processuais e tempos de recência. |
-| `top_100_empreendimentos.csv` | **Sales Intelligence** | Ranking priorizado de contas de maior potencial para importação direta em ferramentas de CRM. |
-| `index.html` | **Front-End / Web** | Console interativa em HTML para visualização rápida e compartilhamento executivo dos resultados. |
-| `Panorama Licenciamento CETESB (Web scrapping).pbit` | **Business Intelligence** | Template oficial do Power BI contendo a modelagem de dados, medidas DAX e visuais configurados. |
-| `Panorama Licenciamento CETESB (Web scrapping).pdf` | **Relatório Executivo** | Versão estática de alta resolução para distribuição em reuniões de diretoria e apresentações comerciais. |
-
----
-
-## ⚙️ Metodologia de Cálculo do Lead Scoring
-
-A pontuação de cada oportunidade segue um modelo determinístico auditável:
-
-$$\text{Score de Oportunidade} = f(\text{Criticidade do Status}, \text{Recência da Movimentação}, \text{Volume de Processos})$$
-
-1. **Extração Automatizada (Web Scraping):** Coleta estruturada dos registros públicos de licenciamento ambiental junto ao portal da CETESB.
-2. **Saneamento e Padronização:** Limpeza de strings, unificação de razões sociais/empreendimentos e catalogação documentada em `dicionario_dados.csv`.
-3. **Atribuição de Score e Temperatura:** Classificação objetiva de $0$ a $100$ para eliminar viés na prospecção.
-4. **Prescrição Comercial:** Associação automática de cada faixa de status a um serviço técnico específico do portfólio da consultoria.
-
----
-
-## 🚀 Como Utilizar os Artefatos deste Repositório
-
-1. **Exploração Rápida dos Dados:** Consulte `dicionario_dados.csv` para compreender o schema e explore `top_100_empreendimentos.csv` para visualizar a saída pronta para o CRM.
-2. **Visualização no Power BI:** Baixe o arquivo `Panorama Licenciamento CETESB (Web scrapping).pbit`, abra no **Power BI Desktop** e aponte a origem de dados para os arquivos `.csv` locais deste repositório.
-3. **Visualização Web / Executiva:** Abra o arquivo `index.html` em qualquer navegador ou consulte o relatório consolidado em `Panorama Licenciamento CETESB (Web scrapping).pdf`.
+<details>
+<summary><b>📊 5. Previsibilidade Financeira: MRR vs. One-Off</b></summary>
+<br>
+<div align="center">
+<img src="Perfil%20contrato.png" width="800">
+</div>
+<br>
+<b>Estratégia de Conversão:</b> Modelagem de fluxo de caixa preditivo. Entender a proporção da carteira extraída divide o foco estratégico: empresas com perfil <b>One-Off</b> trazem injeção rápida de caixa (ex: licença prévia pontual), enquanto empresas com múltiplas plantas e dezenas de licenças são direcionadas para o funil de <b>MRR (Monthly Recurring Revenue)</b>, garantindo contratos anuais de terceirização do departamento ambiental.
+</details>
+<div align="center">
+  <br>
+  <b>Pronto para rodar no seu CRM?</b> Baixe o artefato <code>top_100_empreendimentos.csv</code> ou abra o <code>.pbit</code> no Power BI Desktop para conectar às suas próprias fontes de dados.
+</div>
